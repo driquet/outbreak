@@ -1,0 +1,22 @@
+> nick django
+< nick django 1
+< init
+< attack_radius x
+(...)
+< end
+< turn 0
+< players 2
+< scores 0 0
+< water 0 0
+< water 0 1
+< water 0 2
+(...)
+< zombie 1 2 2
+< entity 5 5 0 0
+< end
+> move 1 S
+> end
+(...) 
+< end
+< final 1 72
+< scores 42 12

@@ -1,0 +1,88 @@
+\documentclass{article}
+    
+    \usepackage[frenchb]{babel}
+    \usepackage[utf8]{inputenc}
+    \usepackage{amsmath}
+    \usepackage{color}
+    \usepackage{xcolor}
+    \usepackage{caption}
+    \usepackage[colorlinks=true, linkcolor=blue]{hyperref}
+    \usepackage{graphicx}
+    \usepackage{listings}
+    \usepackage{todonotes}
+    \usepackage{fullpage}
+
+    \lstset{language=Python}
+    \lstset{commentstyle=\tt\it}
+    \lstset{keywordstyle=\tt\bf}
+    \lstset{stringstyle=\tt\bf}
+    \lstset{basicstyle=\small\tt}
+    \lstset{texcl=true}
+    \lstset{inputencoding=latin1}
+    \DeclareCaptionFont{white}{\color{white}}
+    \DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+    \captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+    \lstset{
+        language=C,
+        numbers=left,
+        numberstyle=\tiny,
+        columns=fixed,
+    }
+    \lstset{
+        morekeywords={turn, end}
+    }
+    \lstset{emph={%  
+        end, nick, init, turn, players, scores, water, entity, shot, contagion, zombie, dead, move, final, %
+        attack_radius, berzerk_delay, berzerk_radius, bullet_amount, contagion_amount, contagion_radius, cols, rows ,%
+        daytime_duration, heigth_max, initial_phase, move_len, nb_team, shot_radius, shot_success, timing_limit, turn_max, view_radius, width_max
+        },emphstyle={\color{blue}}%
+    }%
+
+
+    \title{Outbreak\\Projet tuteuré - N4}
+    \author{Damien Riquet\\\href{mailto:damien.riquet@lifl.fr}{damien.riquet@lifl.fr}}
+    \date{2013}
+
+    % Macros
+    \newcommand{\north}{\lstinline!NORTH!}
+    \newcommand{\south}{\lstinline!SOUTH!}
+    \newcommand{\east}{\lstinline!EAST!}
+    \newcommand{\west}{\lstinline!WEST!}
+    \newcommand{\movelen}{\lstinline!MOVE\_LEN!}
+    \newcommand{\widthmax}{\lstinline!COLS!}
+    \newcommand{\heightmax}{\lstinline!ROWS!}
+    \newcommand{\ground}{\lstinline!GROUND!}
+    \newcommand{\water}{\lstinline!WATER!}
+    \newcommand{\viewradius}{\lstinline!VIEW\_RADIUS!}
+    \newcommand{\bulletamount}{\lstinline!BULLET\_AMOUNT!}
+    \newcommand{\shotradius}{\lstinline!SHOT\_RADIUS!}
+    \newcommand{\shotsuccess}{\lstinline!SHOT\_SUCCESS!}
+    \newcommand{\contagionamount}{\lstinline!CONTAGION\_AMOUNT!}
+    \newcommand{\contagionradius}{\lstinline!CONTAGION\_RADIUS!}
+    \newcommand{\berzerkdelay}{\lstinline!BERZERK\_DELAY!}
+    \newcommand{\berzerkradius}{\lstinline!BERZERK\_RADIUS!}
+    \newcommand{\turnmax}{\lstinline!TURN\_MAX!}
+    \newcommand{\attackradius}{\lstinline!ATTACK\_RADIUS!}
+    \newcommand{\timinglimit}{\lstinline!TIMING\_LIMIT!}
+
+    \newcommand{\human}{\lstinline!HUMAN=0!}
+    \newcommand{\cop}{\lstinline!COP=1!}
+    \newcommand{\zombie}{\lstinline!ZOMBIE=2!}
+    \newcommand{\berzerk}{\lstinline!BERZERK=3!}
+
+
+\begin{document}
+    \maketitle
+
+    \clearpage
+    \tableofcontents
+    \clearpage
+
+    \input{parts/intro}
+    \input{parts/projet}
+    \input{parts/rules}
+    \input{parts/specification}
+    \input{parts/tools}
+    \input{parts/conclusion}
+
+\end{document}
