@@ -11,6 +11,13 @@
     \usepackage{listings}
     \usepackage{todonotes}
     \usepackage{fullpage}
+    \usepackage{pifont,mdframed}
+
+    \newenvironment{warning}
+      {\par\vspace{1em}\begin{mdframed}[linewidth=2pt,linecolor=red]%
+        \begin{list}{}{\leftmargin=1cm
+                       \labelwidth=\leftmargin}\item[\Large\ding{43}]}
+      {\end{list}\end{mdframed}\vspace{1em}\par}
 
     \lstset{language=Python}
     \lstset{commentstyle=\tt\it}

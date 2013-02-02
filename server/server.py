@@ -13,7 +13,7 @@ import time
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Outbreak serveur.')
+    parser = argparse.ArgumentParser(description='Outbreak server.')
     parser.add_argument('--config', '-c', help='configuration file', default='conf/default.py')
     parser.add_argument('--arena', '-a', help='map used for this game', default='maps/map_example.map')
     parser.add_argument('--trace', '-t', help='name of the trace file', default='trace_%s' % (time.strftime("%d-%m-%H-%M-%S")))

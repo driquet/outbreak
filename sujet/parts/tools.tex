@@ -1,7 +1,72 @@
 \section{Outils} % (fold)
 \label{outils}
 
-Cette section présentera les outils mis à disposition aux étudiants.
-Également, il sera présenté comment utiliser le serveur de jeu en local.
+Cette section présente les outils mis à disposition aux étudiants.
+Dans le cadre de ce projet, il y a deux outils que vous pouvez utiliser : le serveur et l'interface graphique.
+
+\subsection{Pré-requis} % (fold)
+Pour utiliser ces outils, il faut installer les outils suivants :
+\begin{itemize}
+    \item Python (version 2) ;
+    \item Module Pygtk.
+\end{itemize}
+
+Ces modules sont installés sur les machines de l'IUT (a priori).
+Python est généralement installé de base sur Linux et OS X.
+% subsection Pré-requis (end)
+
+\subsection{Serveur de jeu} % (fold)
+Le serveur de jeu est un programme qui permet le déroulement d'une partie.
+C'est lui qui gère les arènes, la communication avec les joueurs, le tour par tour, etc.
+
+Pour lancer le serveur, il faut lancer le programme python \lstinline!server.py!.
+Voici son usage: 
+\begin{lstlisting}
+usage: server.py [-h] [--config CONFIG] [--arena ARENA] [--trace TRACE]
+\end{lstlisting}
+
+Si aucun argument n'est donné, il choisit une configuration par défaut, une arène par défaut.
+Le fichier de configuration contient les informations relatives à la partie (radius, nombre de balles, etc.).
+Il contient également les informations sur le serveur (pour que les joueurs puissent se connecter).
+Voici un exemple d'utilisation :
+\begin{lstlisting}
+python server.py --arena maps/map_2p_01.map 
+Waiting for player #1 to connect 
+\end{lstlisting}
+
+Comme il s'agit d'une carte pour deux joueurs, le serveur attend que les joueurs se connectent.
+Une fois connectés, il envoie les informations initiales et ensuite gère le tour par tour.
+
+% section Serveur de jeu (end)
+
+\subsection{Joueur aléatoire} % (fold)
+Pour que vous puissiez tester votre joueur, un joueur aléatoire est mis à disposition.
+
+\begin{warning}
+Attention, il n'est pas recommandé de suivre le style d'implémentation du joueur aléatoire.
+Il a été réalisé dans le but précis de jouer aléatoirement et aucun concept de programmation par classe utilisant des
+design-patterns n'a été suivis.
+\end{warning}
+
+Pour lancer le joueur, il faut lui dire comment communiquer avec le serveur, en d'autres termes l'adresse IP et le port sur
+lequel se connecter. Voici l'usage de ce programme :
+
+\begin{lstlisting}
+random_player.py [-h] [--host HOST] [--port PORT] 
+\end{lstlisting}
+
+Voici comment le joueur serait lancé si le serveur tourne sur la machine locale, sur le port 8080 :
+
+\begin{lstlisting}
+python random_player.py --host localhost --port 8080 
+\end{lstlisting}
+% subsection Joueur aléatoire (end)
+
+\subsection{Interface graphique} % (fold)
+
+Une interface graphique sommaire est fournie.
+Elle vous permettra de visualiser une partie et comprendre la stratégie que vous avez établie.
+
+% subsection Interface graphique (end)
 
 % section Outils (end)
