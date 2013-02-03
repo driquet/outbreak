@@ -5,7 +5,7 @@ port = 8080
 [initial]
 # Server related info
 timing_limit = 0.5
-turn_max = 500
+turn_max = 300
 
 # Entity related info
 move_len = 1
