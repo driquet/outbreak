@@ -9,10 +9,12 @@ import re
 import random
 import argparse
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Basic player with random moves.')
     parser.add_argument('--host', help='name of the server', default='localhost')
     parser.add_argument('--port', type=int, help='port of the server', default=8080)
+    parser.add_argument('--nick', help='Nick of the player', default='django')
 
     args = parser.parse_args()
 
@@ -26,8 +28,7 @@ if __name__ == '__main__':
     # 1) Sends nick
     # 2) Receives global data
 
-    nick = 'django'
-    conn.sendall('nick %s\n' % (nick))
+    conn.sendall('nick %s\n' % (args.nick))
     data = conn.recv(1024) # Answer of the server (we don't care for this player)
     print '>', data,
 
