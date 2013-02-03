@@ -3,6 +3,7 @@
 
 Cette section présente les outils mis à disposition aux étudiants.
 Dans le cadre de ce projet, il y a deux outils que vous pouvez utiliser : le serveur et l'interface graphique.
+Pour chacun de ces outils, l'option \lstinline!--help! permet d'afficher l'aide.
 
 \subsection{Pré-requis} % (fold)
 Pour utiliser ces outils, il faut installer les outils suivants :
@@ -45,14 +46,14 @@ Pour que vous puissiez tester votre joueur, un joueur aléatoire est mis à disp
 \begin{warning}
 Attention, il n'est pas recommandé de suivre le style d'implémentation du joueur aléatoire.
 Il a été réalisé dans le but précis de jouer aléatoirement et aucun concept de programmation par classe utilisant des
-design-patterns n'a été suivis.
+design-patterns n'a été suivi.
 \end{warning}
 
 Pour lancer le joueur, il faut lui dire comment communiquer avec le serveur, en d'autres termes l'adresse IP et le port sur
 lequel se connecter. Voici l'usage de ce programme :
 
 \begin{lstlisting}
-random_player.py [-h] [--host HOST] [--port PORT] 
+usage: random_player.py [-h] [--host HOST] [--port PORT] 
 \end{lstlisting}
 
 Voici comment le joueur serait lancé si le serveur tourne sur la machine locale, sur le port 8080 :
@@ -66,6 +67,23 @@ python random_player.py --host localhost --port 8080
 
 Une interface graphique sommaire est fournie.
 Elle vous permettra de visualiser une partie et comprendre la stratégie que vous avez établie.
+Une partie peut être visualisée a posteriori, grâce au fichier de traces généré par le serveur.
+Voici l'usage de l'interface graphique :
+\begin{lstlisting}
+usage: gui.py [-h] --trace TRACE [--timeout TIMEOUT]
+\end{lstlisting}
+
+Par exemple, si le serveur a généré le fichier de traces \lstinline!map_1_2p.data!, on pourra visualiser la partie de la manière suivante :
+\begin{lstlisting}
+python gui.py --trace map_1_2p.data
+\end{lstlisting}
+
+Dans cette interface graphique, les carrés gris représentent l'eau (une eau grise comme par chez nous).
+Les carrés blancs, jaunes et rouges représentent les unités contrôlées par le serveur, respectivement les humains, les policiers et les berzerks.
+Les zombies de chaque équipe sont représentés par des ronds et une couleur correspond à une équipe donnée.
+
+
+
 
 % subsection Interface graphique (end)
 
