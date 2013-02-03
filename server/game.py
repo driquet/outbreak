@@ -172,9 +172,6 @@ class OutbreakGame():
 
 
 
-        
-
-
     def send_initial_data(self, player):
         """ Send the initial data (global data from the configuration file) """
         print "Sending initial data to player #%d" % player
@@ -400,6 +397,8 @@ class OutbreakGame():
             if len(ennemy_zombies_in_range):
                 ennemy = random.sample(ennemy_zombies_in_range, 1)[0]
 
+                cop.remove_bullet()
+
                 if random.random() < shot_success:
                     # Shot successful
                     dead_entities.add(ennemy)
@@ -409,8 +408,8 @@ class OutbreakGame():
                         # Updates score
                         self.team_scores[cop._team - 1] += score_zombie_killed
 
-                    elif not cop.has_bullet():
-                        self.entities.make_cop_from_human(cop)
+                if cop._type == Genre.COP and not cop.has_bullet():
+                    self.entities.make_human_from_cop(cop)
 
         # Then, manage berzerk explosion
         for bzk in self.entities.get_berzerks():
@@ -631,28 +630,10 @@ class OutbreakGame():
         print ' Cops : %d left' % (len(self.entities.get_cops()))
         print ' Berzerks : %d left' % (len(self.entities.get_berzerks()))
         
-        # create repr of the map
-        arena_repr = []
-        for row in xrange(self.arena.rows):
-            arena_repr.append("")
-
-            for col in xrange(self.arena.cols):
-                arena_repr[row] += 'w' if self.arena.arena[row][col].surface == arena.Surface.WATER else ' '
-
         print '%20s %10s %10s' % ('', 'global', 'last turn')
         for key in self.global_data:
             print '%20s %10d %10d' % (key, self.global_data[key], self.turn_data[key])
         
-        # Places entities on the map
-        for entity in self.entities.get_all():
-            str_b = arena_repr[entity._row][:entity._col]
-            str_e = arena_repr[entity._row][entity._col+1:]
-            arena_repr[entity._row] = str_b + entity.get_char_repr() + str_e
-
-        # Print map
-        for row in arena_repr:
-            print row
-
         print '----- Game data ------'
             
 

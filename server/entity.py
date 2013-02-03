@@ -84,7 +84,7 @@ class EntityManager:
         entity.create_berzerk(berzerk_delay) # Create the berzerk
 
 
-    def make_cop_from_human(self, entity):
+    def make_human_from_cop(self, entity):
         entity.create_human()
         self._entities['cops'].remove(entity)
         self._entities['humans'].append(entity)
