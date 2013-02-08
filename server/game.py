@@ -55,6 +55,11 @@ class OutbreakGame():
 
         self.trace_file = open(trace, 'w')
 
+        # Add game data into config
+        self.config.set('initial', 'rows', str(self.arena.rows))
+        self.config.set('initial', 'cols', str(self.arena.cols))
+        self.config.set('initial', 'nb_team', str(self.arena.nb_players))
+
 
     def trace_init(self):
         """ Print initial data into the trace file """
@@ -177,7 +182,7 @@ class OutbreakGame():
         print "Sending initial data to player #%d" % player
 
         for option in self.config.options('initial'):
-            send_player_message(self.players_connection[player], '%s %f\n' % (option, self.config.getfloat('initial', option)))
+            send_player_message(self.players_connection[player], '%s %.2f\n' % (option, self.config.getfloat('initial', option)))
             print '%s %f' % (option, self.config.getfloat('initial', option))
 
         send_player_message(self.players_connection[player], 'end\n')
