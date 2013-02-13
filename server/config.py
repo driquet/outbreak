@@ -12,13 +12,13 @@ from os.path import isfile
 # exceptions
 class ConfigException(Exception):
     pass
-        
+
 
 def load_config(filename):
     """
     Loads the configuration file
     Verify that the file exists and that data from the config file is valid
-    
+
     @param filename: name of the file to load
     @raise ConfigException: if the file does not exist or the config file is not valid
     """
@@ -33,7 +33,7 @@ def load_config(filename):
 
     options = [ 'timing_limit', 'turn_max', 'move_len', 'view_radius', 'bullet_amount', 'shot_radius', 'shot_success',
                 'attack_radius', 'contagion_amount', 'contagion_radius', 'berzerk_delay', 'berzerk_radius', ]
-    
+
     for option in options:
         if not config.has_option('initial', option):
             raise ConfigException("Mission option '%s' into the config file '%s'", option, filename)

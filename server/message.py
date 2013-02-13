@@ -11,11 +11,10 @@ class Message(object):
         Its only purpose is to be sent to a player """
     def __init__(self):
         print self
-    
+
     def __str__(self):
         """ The only method that matters : how to describe the message """
         pass
-
 
 class WaterMessage(Message):
     """ A new water cell has been discovered """

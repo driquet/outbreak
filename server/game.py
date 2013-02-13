@@ -1,7 +1,7 @@
 '''
 File: game.py
 Author: Damien Riquet <d.riquet@gmail.com>
-Description: Class game describe an outbreak game (initial turn then turns while there is no winner
+Description: Class game describe an outbreak game (initial turn then turns while there is no winner)
 '''
 
 # imports
@@ -9,10 +9,8 @@ import random
 import re
 
 import arena
-import config
 import message
 from entity import Genre
-from enum import enum
 from network import get_player_connection, get_player_message, get_player_message_sequence, send_player_message
 
 
@@ -93,23 +91,24 @@ class OutbreakGame():
 
     def manage_player_connection(self, host, port):
         """ Awaits for every player to connect to the server and fill local connections """
-        for i in xrange(1, self.arena.nb_players + 1):
+        i = 1 # Corresponds to the number of player managed
+        while i <= self.arena.nb_players:
             print "Waiting for player #%d to connect" % i
             player_conn = get_player_connection(host, port, self.config.getfloat('initial', 'timing_limit'))
             self.players_connection[i] = player_conn
 
             # Awaits for nick identification
             msg = get_player_message(player_conn)
-            if msg == "":
-                # TODO Manage error
-                pass
-
             nick_re = r"nick\s+(\w+)"
             m = re.match(nick_re, msg)
 
             if not m:
-                # TODO Manage message error
-                pass
+                # The message received does not match
+                print "A player attempted to connect but his message was not correct"
+                print "Awaiting a message that looks like: nick <pseudo>, but received %s" % msg
+                # Close the connection
+                player_conn.close()
+                continue
 
             nick = m.group(1)
             if nick in self.players_nick.values():
@@ -128,9 +127,11 @@ class OutbreakGame():
             for z in self.entities.get_player_zombies(i):
                 self.players_message[i].append(message.ZombieMessage(z._id, z._row, z._col))
 
+            i += 1
+
 
     def manage_end_game(self):
-        """ 
+        """
             This function deals with the end of a game
             It sends 'end' message to players left
             then send final data to all players
@@ -187,14 +188,16 @@ class OutbreakGame():
 
         send_player_message(self.players_connection[player], 'end\n')
 
-    
+
     def compute_turn_data(self):
         """
             In this fonction, we have to compute the data relative to each player
             It includes:
                 - new water cells discovered
-                - ennemy entity in range 
+                - ennemy entity in range
                 - shots made by the player's cops
+                - contagions made by the player's zombies
+                - player's zombies that made a move
                 - contagions made by the player's zombies
                 - player's zombies that made a move
                 - player's zombies that are dead
@@ -262,11 +265,11 @@ class OutbreakGame():
     def get_player_move(self, player):
         moves = []
         movers = []
-        
+
         print '- get_player_move - #%d ' % player
         msg = get_player_message_sequence(self.players_connection[player], self.config.getfloat('initial', 'timing_limit'))
-        
-        if msg.strip().endswith('end'): 
+
+        if msg.strip().endswith('end'):
             for m in re.finditer(r"move\s+(\d+)\s+([N|E|S|W])", msg):
                 z_id = int(m.group(1))
                 z_dir = m.group(2)
@@ -281,7 +284,7 @@ class OutbreakGame():
                                 moves.append((z, z_dir))
                                 movers.append(z_id)
                         break
-                
+
 
         return moves
 
@@ -296,7 +299,7 @@ class OutbreakGame():
         self.turn_data['human_killed'] = 0
         self.turn_data['cop_killed'] = 0
         self.turn_data['berzerk_created'] = 0
-        
+
         # Compute turn data
         self.compute_turn_data()
 
@@ -328,7 +331,7 @@ class OutbreakGame():
 
 
     def do_move_phase(self, moves):
-        """ 
+        """
             Move all the entities
             A move is formatted as follow : (entity, direction)
             Moves are done only at the end of this function
@@ -383,8 +386,8 @@ class OutbreakGame():
                         # Updates score
                         self.team_scores[entity._team - 1] += score_zombie_lost
 
-                    
-        
+
+
 
     def do_auto_phase(self):
         """ The auto phase manages automatic events like cop shots or berzerk explosion """
@@ -487,7 +490,7 @@ class OutbreakGame():
         """
         print '--- contagion_phase'
         contagion_radius = self.config.getfloat('initial', 'contagion_radius')
-        
+
         for human in self.entities.get_humans():
             zombies = self.entities.get_nearest_zombies(human, contagion_radius)
 
@@ -522,7 +525,7 @@ class OutbreakGame():
                 # At this point, we know the zombie that tries to infect the human
                 contagion_amount = self.config.getint('initial', 'contagion_amount')
                 p_contagion = float(zombie._contagion) / contagion_amount
-                
+
                 if random.random() < p_contagion:
                     # Infection
                     self.entities.contaminate_human(zombie, human, contagion_amount)
@@ -549,7 +552,7 @@ class OutbreakGame():
                         self.global_data['berzerk_created'] += 1
                         self.turn_data['berzerk_created'] += 1
 
-                        
+
                     else:
                         # Human dies - remove him from the map an from the list
 
@@ -565,14 +568,12 @@ class OutbreakGame():
 
 
     def check_end_condition(self):
-        """
-        This function checks if end conditions are reached or not.
-        It also remove beaten players.
+        """ It also remove beaten players.
 
         The game is finished when :
             - TURN_MAX turns
             - Only 1 player left (or less)
-        
+
         @return: True if the game is finished, False otherwise
 
         """
@@ -607,7 +608,7 @@ class OutbreakGame():
         self.manage_player_connection(host, port)
         self.trace_init()
 
-        # 2) Play turn until there is no end condition reached 
+        # 2) Play turn until there is no end condition reached
         finished = False
         while not finished:
             self.print_game_data()
@@ -624,9 +625,9 @@ class OutbreakGame():
 
 
     def print_game_data(self):
-        """ This function print the current state of the arena """ 
+        """ This function print the current state of the arena """
         print '----- Game data ------'
-        
+
         for player in xrange(1, self.arena.nb_players + 1):
             print ' Player #%d - score %d : %d zombies left' % (player, self.team_scores[player - 1], len(self.entities.get_player_zombies(player)))
 
@@ -634,13 +635,13 @@ class OutbreakGame():
         print ' Humans: %d left' % (len(self.entities.get_humans()))
         print ' Cops : %d left' % (len(self.entities.get_cops()))
         print ' Berzerks : %d left' % (len(self.entities.get_berzerks()))
-        
+
         print '%20s %10s %10s' % ('', 'global', 'last turn')
         for key in self.global_data:
             print '%20s %10d %10d' % (key, self.global_data[key], self.turn_data[key])
-        
+
         print '----- Game data ------'
-            
+
 
 
 

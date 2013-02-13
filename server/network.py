@@ -7,10 +7,9 @@ Description: This file contains all network related functions
 # imports
 import socket
 import time
-import sys
 
 class DisconnectedPlayerException(Exception):
-    pass 
+    pass
 
 
 def get_player_connection(host, port, timeout=2):
@@ -25,12 +24,12 @@ def get_player_connection(host, port, timeout=2):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind((host, port))
-    sock.listen(1) 
+    sock.listen(1)
     connection, client_address = sock.accept()
 
     # Set timeout option
     connection.settimeout(timeout)
-    
+
     return connection
 
 
@@ -41,7 +40,7 @@ def get_player_message(conn):
     """
     data = ""
 
-    try: 
+    try:
         data = conn.recv(1024)
     except socket.timeout:
         pass
@@ -56,7 +55,7 @@ def get_player_message_sequence(conn, timing_limit):
 
     """
     data = ""
-    
+
     time_begin = time.clock()
     while True:
         try:
@@ -75,7 +74,7 @@ def get_player_message_sequence(conn, timing_limit):
         return ''
 
     return data
-    
+
 
 
 

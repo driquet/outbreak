@@ -8,11 +8,10 @@ Description: The map is defined in this class.
 # imports
 import re
 import random
-from math import sqrt, pow
+from math import sqrt
 
 
 from enum import automatic_enum, enum
-from config import load_config
 from entity import EntityManager, Entity
 
 # enums
@@ -26,7 +25,6 @@ class MapException(Exception):
 class Cell:
     def __init__(self, surface=Surface.GROUND):
         self.surface = surface
-
 
 class Arena:
     def __init__(self, filename, config):
@@ -59,7 +57,7 @@ class Arena:
                 view_radius = config.getint('initial', 'view_radius')
                 view_radiusf = config.getfloat('initial', 'view_radius')
                 self.relative_visible_cells = []
-                
+
                 # Compute relative visible cells
                 for row in xrange(-view_radius, view_radius + 1):
                     for col in xrange(-view_radius, view_radius + 1):
@@ -67,7 +65,7 @@ class Arena:
                             continue
                         if sqrt(row*row + col*col) <= view_radiusf:
                             self.relative_visible_cells.append((row, col))
-                            
+
 
                 self.arena = [[Cell() for i in xrange(self.cols)] for j in xrange(self.rows)]
 
