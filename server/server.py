@@ -5,6 +5,7 @@ Description: This file launches the server and manages arguments
 '''
 
 import argparse
+import os
 
 import config
 import arena
@@ -16,9 +17,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Outbreak server.')
     parser.add_argument('--config', '-c', help='configuration file', default='conf/default.py')
     parser.add_argument('--arena', '-a', help='map used for this game', default='maps/map_2p_01.map')
-    parser.add_argument('--trace', '-t', help='name of the trace file', default='trace_%s.data' % (time.strftime("%d-%m-%H-%M-%S")))
+    parser.add_argument('--trace', '-t', help='name of the trace file', default='trace/trace_%s.data' % (time.strftime("%d-%m-%H-%M-%S")))
 
     args = parser.parse_args()
+
+    # Create the dir if it does not exist
+    if args.trace.startswith('trace/') and not os.path.exists('trace/'):
+        os.mkdir('trace')
 
     c = config.load_config(args.config)
     m = arena.Arena(args.arena, c)
@@ -27,4 +32,8 @@ if __name__ == '__main__':
     host = c.get('server', 'host') if c.has_option('server', 'host') else 'localhost'
     port = c.getint('server', 'port') if c.has_option('server', 'host') else 8080
 
-    g.do_game(host, port)
+
+    try:
+        g.do_game(host, port)
+    except KeyboardInterrupt:
+        print " Game stopped"
