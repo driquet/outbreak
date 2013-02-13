@@ -322,10 +322,26 @@ class OutbreakGame():
 
 
     def compute_local_moves(self):
+        """
+            Compute moves for non-playable characters (humans, cops and berzerk)
+            Basic strategy:
+                * Do not move into a cell where there is an entity
+                * TODO human: go away from zombies and berzerks
+                * TODO cops: go away from berzerk and towards zombies if bullets left
+                * TODO berzerks: go towards the maximum of entities
+        """
         moves = []
 
+        # Management of occupied cells
+        occupied_cells = [(e._row, e._col) for e in self.entities.get_all()]
+
         for entity in self.entities.get_humans() + self.entities.get_cops() + self.entities.get_berzerks():
-            moves.append((entity, random.choice(['N', 'S', 'E', 'W'])))
+            # Compute possible moves
+            possible_move = [d for d in ['N', 'S', 'E', 'W'] if self.arena.is_valid_move(entity, d) \
+                    and self.arena.get_targeted_cell(entity, d) not in occupied_cells]
+
+            if len(possible_move):
+                moves.append((entity, random.choice(possible_move)))
 
         return moves
 
