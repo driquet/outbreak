@@ -14,9 +14,9 @@ from entity import Genre
 from network import get_player_connection, get_player_message, get_player_message_sequence, send_player_message
 
 
-score_zombie_lost = -2
-score_contagion = 1
-score_zombie_killed = 1
+score_zombie_lost = -1
+score_contagion = 2
+score_zombie_killed = 3
 score_cop_killed = 5
 
 class OutbreakGame():
