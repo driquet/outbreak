@@ -150,3 +150,26 @@ class Arena:
             return False
         return True
 
+    def get_opposite_dirs(self, entity, avoid):
+        """ Return directions that get away entity from avoid entity """
+        possible_dir = ['N', 'S', 'W', 'E']
+        ret = []
+
+        for dir in possible_dir:
+            target = self.get_targeted_cell(entity, dir)
+            if entity.distance_to(avoid) < avoid.distance_to_location(*target):
+                ret.append(dir)
+
+        return ret
+
+    def get_towards_dirs(self, entity, avoid):
+        possible_dir = ['N', 'S', 'W', 'E']
+        ret = []
+
+        for dir in possible_dir:
+            target = self.get_targeted_cell(entity, dir)
+            if entity.distance_to(avoid) < avoid.distance_to_location(*target):
+                ret.append(dir)
+
+        return ret
+

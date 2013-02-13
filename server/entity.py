@@ -135,6 +135,13 @@ class EntityManager:
                     ret.append(elt)
         return ret
 
+    def get_nearest_entities_from(self, location, radius):
+        ret = []
+        for elt in self._entities['all']:
+            if elt.distance_to_location(*location):
+                ret.append(elt)
+        return ret
+
 class Entity:
     def __init__(self, row, col, entity_type=Genre.HUMAN):
         self._type = entity_type
@@ -208,6 +215,11 @@ class Entity:
     def distance_to(self, other):
         """ Compute the euclidian distance between two entities """
         return float(sqrt(pow(self._row - other._row, 2) + pow(self._col - other._col, 2)))
+
+    def distance_to_location(self, row, col):
+        """ Compute the euclidian distance between an entity and a location """
+        return float(sqrt(pow(self._row - row, 2) + pow(self._col - col, 2)))
+
 
     def __repr__(self):
         return '(team %d - id %d - pos %d:%d)' % (self._team, self._id, self._row, self._col)

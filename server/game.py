@@ -326,14 +326,16 @@ class OutbreakGame():
             Compute moves for non-playable characters (humans, cops and berzerk)
             Basic strategy:
                 * Do not move into a cell where there is an entity
-                * TODO human: go away from zombies and berzerks
-                * TODO cops: go away from berzerk and towards zombies if bullets left
-                * TODO berzerks: go towards the maximum of entities
+                * human: go away from zombies and berzerks
+                * cops: go away from berzerk and towards zombies if bullets left
+                * berzerks: go towards the maximum of entities
         """
         moves = []
 
         # Management of occupied cells
         occupied_cells = [(e._row, e._col) for e in self.entities.get_all()]
+        view_radius = self.config.getfloat('initial', 'view_radius')
+        berzerk_radius = self.config.getfloat('initial', 'berzerk_radius')
 
         for entity in self.entities.get_humans() + self.entities.get_cops() + self.entities.get_berzerks():
             # Compute possible moves
@@ -341,7 +343,54 @@ class OutbreakGame():
                     and self.arena.get_targeted_cell(entity, d) not in occupied_cells]
 
             if len(possible_move):
-                moves.append((entity, random.choice(possible_move)))
+
+                if entity._type == Genre.HUMAN:
+                    # Try to go away from zombies and berzerk
+                    # Look for the nearest zombie or berzerk and get away from him
+                    nearest_ennemies = [elt for elt in self.entities.get_nearest_entities(entity, view_radius) \
+                            if elt._type == Genre.ZOMBIE or elt._type == Genre.BERZERK]
+                    if len(nearest_ennemies):
+                        nearest = min(nearest_ennemies, key=lambda e:entity.distance_to(e))
+                        possible_dir = self.arena.get_opposite_dirs(entity, nearest)
+                        if len(possible_dir):
+                            possible_move = possible_dir[:]
+
+                elif entity._type == Genre.COP:
+                    nearest_ennemies = [elt for elt in self.entities.get_nearest_entities(entity, view_radius) \
+                            if elt._type == Genre.ZOMBIE or elt._type == Genre.BERZERK]
+
+                    bzks = [elt for elt in nearest_ennemies if elt._type == Genre.BERZERK]
+                    zombies = [elt for elt in nearest_ennemies if elt._type == Genre.ZOMBIE]
+
+                    # If there is a berzerk, get away
+                    if len(bzks):
+                        nearest = min(bzks, key=lambda e:entity.distance_to(e))
+                        possible_dir = self.arena.get_opposite_dirs(entity, nearest)
+                        if len(possible_dir):
+                            possible_move = possible_dir[:]
+
+
+                    # Then if there is a zombie and has bullets, go towards him
+                    elif len(zombies):
+                        nearest = min(zombies, key=lambda e:entity.distance_to(e))
+                        possible_dir = self.arena.get_towards_dirs(entity, nearest)
+                        if len(possible_dir):
+                            possible_move = possible_dir[:]
+
+                elif entity._type == Genre.BERZERK:
+                    # Look for the cells with most entities nearby
+                    target = max(possible_move, key=lambda d:len( \
+                            self.entities.get_nearest_entities_from( \
+                                self.arena.get_targeted_cell(entity,d),\
+                                berzerk_radius \
+                            )))
+                    possible_move = [target]
+
+
+                chosen_dir = random.choice(possible_move)
+                targeted_cell = self.arena.get_targeted_cell(entity, chosen_dir)
+                occupied_cells.append(targeted_cell)
+                moves.append((entity, chosen_dir))
 
         return moves
 
